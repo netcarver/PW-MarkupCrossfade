@@ -29,7 +29,6 @@ class MarkupCrossfade extends WireData implements Module
     protected static function calcTimings(array $params)
     {
         $params = array_merge(self::getParams(), $params);
-
         extract($params, EXTR_PREFIX_ALL, 'param');
 
         $num_panels = $param_pages->getTotal();
@@ -44,6 +43,7 @@ class MarkupCrossfade extends WireData implements Module
             'html_class' => $param_html_class,
             'li_id' => $param_li_id,
         );
+
         foreach ($param_pages as $z => $p) {
             $images = $p->$param_image_field;
             if (null === $images) {
@@ -179,7 +179,6 @@ CSS;
     function generateHtml(array $params)
     {
         $params = array_merge(self::getParams(), $params);
-
         extract($params, EXTR_PREFIX_ALL, 'param');
 
         $num_panels = $param_pages->getTotal();
@@ -187,11 +186,10 @@ CSS;
             throw new \WireException(__('You must define which pages are to be used as slides for the crossfade.', __FILE__));
         }
 
-
         $o[] = '<ul class="'.$param_html_class.'">';
         foreach ($param_pages as $z => $p) {
             $i = $z + 1;
-            $o[] = '<li id="'.$param_li_id.$i.'">';
+            $o[] = "<li id=\"$param_li_id$i\">";
             $o[] = "\t<span>Panel $i</span>";
             $o[] = "\t<div>";
             if ($p->$param_overlay_field) {
