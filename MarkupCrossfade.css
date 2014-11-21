@@ -1,0 +1,64 @@
+.{{html_class}},
+.{{html_class}}:after {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: {{z_index}};
+}
+{{mask_image}}
+ol.{{html_class}}, ul.{{html_class}} {
+    list-style: none;
+}
+.{{html_class}} li span {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: transparent;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: none;
+    opacity: 0;
+    z-index: {{z_index}};
+    -webkit-backface-visibility: hidden;
+}
+.{{html_class}} li div {
+    position: absolute;
+    bottom: 30px;
+    left: 0px;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    color: #fff;
+    text-transform: uppercase;
+}
+.{{html_class}} li div h3 {
+    font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
+    font-size: 140px;
+    padding: 0;
+    line-height: 140px;
+    color: rgba(255,255,255, 1);
+    background-color: rgba(13,13,13,0.4);
+    text-shadow: 0 0 5px #00c6ff;
+}
+tr.wide {
+    height: 100px;
+}
+tr.wide td, .table>tbody>tr.wide>td {
+    vertical-align: middle;
+}
+
+/* Show at least something when animations not supported */
+.no-cssanimations .{{html_class}} li span{
+    opacity: 1;
+}
+
+@media screen and (max-width: 1140px) {
+    .{{html_class}} li div h3 { font-size: 100px }
+}
+@media screen and (max-width: 600px) {
+    .{{html_class}} li div h3 { font-size: 80px }
+}
