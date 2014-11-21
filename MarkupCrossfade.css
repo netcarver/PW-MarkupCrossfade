@@ -23,6 +23,7 @@ ol.{{html_class}}, ul.{{html_class}} {
     background-repeat: none;
     opacity: 0;
     z-index: {{z_index}};
+    backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
 .{{html_class}} li div {
@@ -40,7 +41,7 @@ ol.{{html_class}}, ul.{{html_class}} {
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
     font-size: 140px;
     padding: 0;
-    line-height: 140px;
+    line-height: 110%;
     color: rgba(255,255,255, 1);
     text-shadow: 0 0 8px #00c6ff;
 }
