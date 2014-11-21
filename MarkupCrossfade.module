@@ -1,0 +1,268 @@
+<?php
+
+class MarkupCrossfade extends WireData implements Module
+{
+    public static function getModuleInfo() {
+        return array(
+            'title'    => 'Markup Cross-Fade',
+            'summary'  => 'Generates CSS3 Key-frame-animated cross fades.',
+            'version'  => 1,
+            'autoload' => false,
+            'author'   => 'Stephen Dickinson, QBox.co',
+        );
+    }
+
+
+    public function getParams($pages = null)
+    {
+        return array(
+            'pages'          => $pages,
+            'duration_field' => 'duration',
+            'overlay_field'  => 'body',
+            'image_field'    => 'image',
+            'html_class'     => 'markup-crossfade',
+            'li_id'          => 'slide_',
+        );
+    }
+
+
+    protected static function calcTimings(array $params)
+    {
+        $params = array_merge(self::getParams(), $params);
+
+        extract($params, EXTR_PREFIX_ALL, 'param');
+
+        $num_panels = $param_pages->getTotal();
+        if ($num_panels == 0) {
+            throw new \WireException(__('You must define which pages are to be used as slides for the crossfade.', __FILE__));
+        }
+
+        $timings = array(
+            'total' => 0,
+            'panels' => array(
+            ),
+            'html_class' => $param_html_class,
+            'li_id' => $param_li_id,
+        );
+        foreach ($param_pages as $z => $p) {
+            $images = $p->$param_image_field;
+            if (null === $images) {
+                $image = '';
+            } else if ($images instanceof WireArray) {
+                $image = $images->first->url;
+            } else {
+                $image = $images->url;
+            }
+
+            $panel_duration = $p->$param_duration_field;
+            $timings['panels'][$z+1]['delay']    = $timings['total'];
+            $timings['panels'][$z+1]['url']      = $image;
+            $timings['panels'][$z+1]['duration'] = $panel_duration;
+            $timings['total'] += (int) $panel_duration;
+        }
+
+        $total = $timings['total'];
+        foreach ($timings['panels'] as $i => &$info) {
+            $finish_pc = (int) bcdiv(bcmul("100", $info['duration'], 2), "$total", 2);
+            $half_pc   = (int) bcdiv($finish_pc, "2", 2);
+            $done_pc   = $finish_pc + $half_pc;
+            if ($done_pc > 100) {
+                $done_pc = 100;
+            }
+
+            $keyframes_images = array(
+                "0%" => 0,
+                "$half_pc%" => 1,
+                "$finish_pc%" => 1,
+                "$done_pc%" => 0,
+                "100%" => 0,
+            );
+
+            $half_pc += 0;
+            $done_pc -= 0;
+
+            $keyframes_titles = array(
+                "0%" => 0,
+                "$half_pc%" => 1,
+                "$finish_pc%" => 1,
+                "$done_pc%" => 0,
+                "100%" => 0,
+            );
+
+            $info['keyframes-images'] = $keyframes_images;
+            $info['keyframes-titles'] = $keyframes_titles;
+        }
+
+        return $timings;
+    }
+
+
+    public static function generateCss(array $params)
+    {
+        $times = self::calcTimings($params);
+        $total = $times['total'];
+        $html_class = $times['html_class'];
+        $li_id      = $times['li_id'];
+
+        $css = '';
+
+        foreach ($times['panels'] as $i => $info) {
+            $delay      = $info['delay'];
+
+            $img_kf = '';
+            $j = 0;
+            foreach ($info['keyframes-images'] as $pc => $opacity) {
+                switch ($j) {
+                case 0:
+                    $ease = '; animation-timing-function:ease-in;';
+                    break;
+                case 1:
+                    $ease = '; animation-timing-function:ease-out;';
+                    break;
+                default:
+                    $ease = '';
+                }
+
+                $img_kf .= "$pc {opacity:$opacity;$ease}\n";
+                $j++;
+            }
+
+            $img_kf_webkit = '';
+            $j = 0;
+            foreach ($info['keyframes-images'] as $pc => $opacity) {
+                switch ($j) {
+                case 0:
+                    $ease = '; -webkit-animation-timing-function:ease-in;';
+                    break;
+                case 1:
+                    $ease = '; -webkit-animation-timing-function:ease-out;';
+                    break;
+                default:
+                    $ease = '; transform: scale(1.1)';
+                }
+
+                $img_kf_webkit .= "$pc {opacity:$opacity$ease}\n";
+                $j++;
+            }
+
+            $img_kf_moz = '';
+            $j = 0;
+            foreach ($info['keyframes-images'] as $pc => $opacity) {
+                switch ($j) {
+                case 0:
+                    $ease = '; -moz-animation-timing-function:ease-in;';
+                    break;
+                case 1:
+                    $ease = '; -moz-animation-timing-function:ease-out;';
+                    break;
+                default:
+                    $ease = '';
+                }
+
+                $img_kf_moz .= "$pc {opacity:$opacity$ease}\n";
+                $j++;
+            }
+
+
+
+            $title_kf = '';
+            foreach ($info['keyframes-titles'] as $pc => $opacity) {
+                $title_kf .= "$pc {opacity:$opacity}\n";
+            }
+
+
+            $css .=<<<CSS
+.{$html_class} li#{$li_id}{$i} span {
+animation        : imageAnimation{$i} {$total}s linear infinite 0s;
+-webkit-animation: imageAnimation{$i} {$total}s linear infinite 0s;
+-moz-animation   : imageAnimation{$i} {$total}s linear infinite 0s;
+-o-animation     : imageAnimation{$i} {$total}s linear infinite 0s;
+-ms-animation    : imageAnimation{$i} {$total}s linear infinite 0s;
+background-image : url('{$info['url']}');
+animation-delay        : {$delay}s;
+-webkit-animation-delay: {$delay}s;
+-moz-animation-delay   : {$delay}s;
+-o-animation-delay     : {$delay}s;
+-ms-animation-delay    : {$delay}s;
+}
+
+.{$html_class} li#{$li_id}{$i} div {
+animation        : titleAnimation{$i} {$total}s linear infinite 0s;
+-webkit-animation: titleAnimation{$i} {$total}s linear infinite 0s;
+-moz-animation   : titleAnimation{$i} {$total}s linear infinite 0s;
+-o-animation     : titleAnimation{$i} {$total}s linear infinite 0s;
+-ms-animation    : titleAnimation{$i} {$total}s linear infinite 0s;
+animation-delay        : {$delay}s;
+-webkit-animation-delay: {$delay}s;
+-moz-animation-delay   : {$delay}s;
+-o-animation-delay     : {$delay}s;
+-ms-animation-delay    : {$delay}s;
+}
+
+@keyframes imageAnimation{$i} {
+$img_kf}
+
+@-webkit-keyframes imageAnimation{$i} {
+$img_kf_webkit}
+
+@-moz-keyframes imageAnimation{$i} {
+$img_kf_moz}
+
+@-o-keyframes imageAnimation{$i} {
+$img_o_moz}
+
+@keyframes titleAnimation{$i} {
+$title_kf}
+
+@-webkit-keyframes titleAnimation{$i} {
+$title_kf}
+
+@-moz-keyframes titleAnimation{$i} {
+$title_kf}
+
+@-o-keyframes titleAnimation{$i} {
+$title_kf}
+
+CSS;
+        }
+
+        return $css;
+    }
+
+
+    function generateHtml(array $params)
+    {
+        $params = array_merge(self::getParams(), $params);
+
+        extract($params, EXTR_PREFIX_ALL, 'param');
+
+        $num_panels = $param_pages->getTotal();
+        if ($num_panels == 0) {
+            throw new \WireException(__('You must define which pages are to be used as slides for the crossfade.', __FILE__));
+        }
+
+
+        $o[] = '<ul class="'.$param_html_class.'">';
+        foreach ($param_pages as $z => $p) {
+            $i = $z + 1;
+            $o[] = '<li id="'.$param_li_id.$i.'">';
+            $o[] = "\t<span>Panel $i</span>";
+            $o[] = "\t<div>";
+            if ($p->$param_overlay_field) {
+                $o[] = "\t\t<h3>{$p->$param_overlay_field}</h3>";
+            }
+            /* if ($p->body) { */
+            /*     $o = "\t\t<p>{$p->body}</p>"; */
+            /* } */
+            $o[] = "\t</div>";
+            $o[] = '</li>';
+        }
+        $o[] = '</ul>';
+        $o = implode("\n", $o);
+        return $o;
+    }
+
+
+
+}
+
