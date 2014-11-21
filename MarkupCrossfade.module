@@ -16,22 +16,26 @@ class MarkupCrossfade extends WireData implements Module
     public function getParams($pages = null)
     {
         return array(
-            'pages'          => $pages,             // WireArray of pages defining the slides of the slideshow.
-            'duration_field' => 'duration',         // Field of the slide page that provides the duration (in seconds)
-            'overlay_field'  => 'body',             // Field of the slide page that provides the overlay text
-            'image_field'    => 'image',            // Field of the slide page that provides the image (url)
-            'html_class'     => 'markup-crossfade', // What class to apply to the owning list
-            'z_index'        => '-10',              // z-index of slideshow container and it's spans
-            'li_id'          => 'slide_',           // What id to use for each slide. The slide # will be appended to this
-            'browsers'       => array(              // Array of browsers extensions to generate CSS for
+            'pages'             => $pages,             // WireArray of pages defining the slides of the slideshow.
+            'duration_field'    => 'duration',         // Field of the slide page that provides the duration (in seconds)
+            'overlay_field'     => 'body',             // Field of the slide page that provides the overlay text
+            'image_field'       => 'image',            // Field of the slide page that provides the image (url)
+            'title_xform_field' => '',                 // Field of the slide page that provides the title transformations
+            'image_xform_field' => '',                 // Field of the slide page that provides the image transformations
+            'title_xforms'      => '',                 // Default title transformations - one per line (\n separator please) - leave blank for none.
+            'image_xforms'      => '',                 // Default image transformations - one per line (\n separator please) - leave blank for none.
+            'html_class'        => 'markup-crossfade', // What class to apply to the owning list
+            'z_index'           => '-10',              // z-index of slideshow container and it's spans
+            'li_id'             => 'slide_',           // What id to use for each slide. The slide # will be appended to this
+            'browsers'          => array(              // Array of browsers extensions to generate CSS for
                 '',
                 '-webkit-',
                 '-moz-',
                 '-o-',
                 '-ms-'
             ),
-            'skip_css'       => false,              // true => use your own CSS file.
-            'mask_image'     => '',                 // location of mask image, if any. Leave blank if none.
+            'skip_css'          => false,              // true => use your own CSS file.
+            'mask_image'        => '',                 // location of mask image, if any. Leave blank if none.
         );
     }
 
@@ -68,10 +72,21 @@ class MarkupCrossfade extends WireData implements Module
                 $image = $images->url;
             }
 
+
             $panel_duration = $p->$param_duration_field;
-            $timings['panels'][$z+1]['delay']    = $timings['total'];
-            $timings['panels'][$z+1]['url']      = $image;
-            $timings['panels'][$z+1]['duration'] = $panel_duration;
+            $timings['panels'][$z+1]['delay']      = $timings['total'];
+            $timings['panels'][$z+1]['url']        = $image;
+            $timings['panels'][$z+1]['duration']   = $panel_duration;
+            if (null !== $p->$param_title_xform_field) {
+                $timings['panels'][$z+1]['ttl_xforms'] = $p->$param_title_xform_field;
+            } else {
+                $timings['panels'][$z+1]['ttl_xforms'] = $param_title_xforms;
+            }
+            if (null !== $p->$param_image_xform_field) {
+                $timings['panels'][$z+1]['img_xforms'] = $p->$param_image_xform_field;
+            } else {
+                $timings['panels'][$z+1]['img_xforms'] = $param_image_xforms;
+            }
             $timings['total'] += (int) $panel_duration;
         }
 
@@ -146,27 +161,50 @@ class MarkupCrossfade extends WireData implements Module
         foreach ($times['panels'] as $i => $info) {
             $delay      = $info['delay'];
 
+            $ttl_xforms = explode("\n", $info['ttl_xforms']);
+            $img_xforms = explode("\n", $info['img_xforms']);
+
             $img_kf = '';
             $j = 0;
             foreach ($info['keyframes-images'] as $pc => $opacity) {
-                switch ($j) {
-                case 0:
-                    $ease = ' {browser}animation-timing-function:ease-in;';
-                    break;
-                case 1:
-                    $ease = ' {browser}animation-timing-function:ease-out;';
-                    break;
-                default:
-                    $ease = ' transform: scale(1.1)';
+
+                // Add opacity...
+                $x = array("opacity:$opacity");
+
+                // Add easing...
+                if (0 === $j) {
+                    $x[] = '{browser}animation-timing-function:ease-in';
+                } else if (1 === $j) {
+                    $x[] = '{browser}animation-timing-function:ease-out';
                 }
 
-                $img_kf .= "\t$pc {opacity:$opacity;$ease}\n";
+                // Add image transformations...
+                if (isset($img_xforms[$j]) && !empty(trim($img_xforms[$j]))) {
+                    $x[] = "transform:{$img_xforms[$j]}";
+                }
+
+                // Merge this keyframe...
+                $x = '{'.implode("; ", $x).';}';
+                $img_kf .= "\t$pc $x\n";
                 $j++;
             }
 
             $ttl_kf = '';
+            $j = 0;
             foreach ($info['keyframes-titles'] as $pc => $opacity) {
-                $ttl_kf .= "\t$pc {opacity:$opacity}\n";
+
+                // Add opacity...
+                $x = array("opacity:$opacity");
+
+                // Add title transformations...
+                if (isset($ttl_xforms[$j]) && !empty(trim($ttl_xforms[$j]))) {
+                    $x[] = "transform:{$ttl_xforms[$j]}";
+                }
+
+                // Merge this keyframe...
+                $x = '{'.implode("; ", $x).';}';
+                $ttl_kf .= "\t$pc $x\n";
+                $j++;
             }
 
 
