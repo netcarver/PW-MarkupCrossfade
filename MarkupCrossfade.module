@@ -105,6 +105,7 @@ class MarkupCrossfade extends WireData implements Module
         $li_id      = $times['li_id'];
 
         $css = '';
+        $browsers = array('', '-webkit-', '-moz-', '-o-', '-ms-');
 
         foreach ($times['panels'] as $i => $info) {
             $delay      = $info['delay'];
@@ -114,60 +115,22 @@ class MarkupCrossfade extends WireData implements Module
             foreach ($info['keyframes-images'] as $pc => $opacity) {
                 switch ($j) {
                 case 0:
-                    $ease = '; animation-timing-function:ease-in;';
+                    $ease = '; {browser}animation-timing-function:ease-in;';
                     break;
                 case 1:
-                    $ease = '; animation-timing-function:ease-out;';
+                    $ease = '; {browser}animation-timing-function:ease-out;';
                     break;
                 default:
-                    $ease = '';
+                    $ease = '; transform: scale(1.1)';
                 }
 
                 $img_kf .= "$pc {opacity:$opacity;$ease}\n";
                 $j++;
             }
 
-            $img_kf_webkit = '';
-            $j = 0;
-            foreach ($info['keyframes-images'] as $pc => $opacity) {
-                switch ($j) {
-                case 0:
-                    $ease = '; -webkit-animation-timing-function:ease-in;';
-                    break;
-                case 1:
-                    $ease = '; -webkit-animation-timing-function:ease-out;';
-                    break;
-                default:
-                    $ease = '; transform: scale(1.1)';
-                }
-
-                $img_kf_webkit .= "$pc {opacity:$opacity$ease}\n";
-                $j++;
-            }
-
-            $img_kf_moz = '';
-            $j = 0;
-            foreach ($info['keyframes-images'] as $pc => $opacity) {
-                switch ($j) {
-                case 0:
-                    $ease = '; -moz-animation-timing-function:ease-in;';
-                    break;
-                case 1:
-                    $ease = '; -moz-animation-timing-function:ease-out;';
-                    break;
-                default:
-                    $ease = '';
-                }
-
-                $img_kf_moz .= "$pc {opacity:$opacity$ease}\n";
-                $j++;
-            }
-
-
-
-            $title_kf = '';
+            $ttl_kf = '';
             foreach ($info['keyframes-titles'] as $pc => $opacity) {
-                $title_kf .= "$pc {opacity:$opacity}\n";
+                $ttl_kf .= "$pc {opacity:$opacity}\n";
             }
 
 
@@ -185,7 +148,6 @@ animation-delay        : {$delay}s;
 -o-animation-delay     : {$delay}s;
 -ms-animation-delay    : {$delay}s;
 }
-
 .{$html_class} li#{$li_id}{$i} div {
 animation        : titleAnimation{$i} {$total}s linear infinite 0s;
 -webkit-animation: titleAnimation{$i} {$total}s linear infinite 0s;
@@ -199,34 +161,15 @@ animation-delay        : {$delay}s;
 -ms-animation-delay    : {$delay}s;
 }
 
-@keyframes imageAnimation{$i} {
-$img_kf}
-
-@-webkit-keyframes imageAnimation{$i} {
-$img_kf_webkit}
-
-@-moz-keyframes imageAnimation{$i} {
-$img_kf_moz}
-
-@-o-keyframes imageAnimation{$i} {
-$img_kf_moz}
-
-@keyframes titleAnimation{$i} {
-$title_kf}
-
-@-webkit-keyframes titleAnimation{$i} {
-$title_kf}
-
-@-moz-keyframes titleAnimation{$i} {
-$title_kf}
-
-@-ms-keyframes titleAnimation{$i} {
-$title_kf}
-
-@-o-keyframes titleAnimation{$i} {
-$title_kf}
-
 CSS;
+
+            foreach ($browsers as $browser) {
+                $image_kf = str_replace('{browser}', $browser, $img_kf);
+                $title_kf = str_replace('{browser}', $browser, $ttl_kf);
+
+                $css .= "@{$browser}keyframes imageAnimation{$i} {\n$image_kf}\n";
+                $css .= "@{$browser}keyframes titleAnimation{$i} {\n$title_kf}\n";
+            }
         }
 
         return $css;
