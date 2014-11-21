@@ -22,6 +22,13 @@ class MarkupCrossfade extends WireData implements Module
             'image_field'    => 'image',            // Field of the slide page that provides the image (url)
             'html_class'     => 'markup-crossfade', // What class to apply to the owning list
             'li_id'          => 'slide_',           // What id to use for each slide. The slide # will be appended to this
+            'browsers'       => array(              // Array of browsers extensions to generate CSS for
+                '',
+                '-webkit-',
+                '-moz-',
+                '-o-',
+                '-ms-'
+            ),
         );
     }
 
@@ -42,6 +49,7 @@ class MarkupCrossfade extends WireData implements Module
             ),
             'html_class' => $param_html_class,
             'li_id' => $param_li_id,
+            'browsers' => $param_browsers,
         );
 
         foreach ($param_pages as $z => $p) {
@@ -103,9 +111,9 @@ class MarkupCrossfade extends WireData implements Module
         $total = $times['total'];
         $html_class = $times['html_class'];
         $li_id      = $times['li_id'];
+        $browsers   = $times['browsers'];
 
         $css = '';
-        $browsers = array('', '-webkit-', '-moz-', '-o-', '-ms-');
 
         foreach ($times['panels'] as $i => $info) {
             $delay      = $info['delay'];
