@@ -16,12 +16,12 @@ class MarkupCrossfade extends WireData implements Module
     public function getParams($pages = null)
     {
         return array(
-            'pages'          => $pages,        // WireArray of pages defining the slides of the slideshow.
-            'duration_field' => 'duration',    // Field of the slide page that provides the duration (in seconds)
-            'overlay_field'  => 'body',        // Field of the slide page that provides the overlay text
-            'image_field'    => 'image',       // Field of the slide page that provides the image (url)
+            'pages'          => $pages,             // WireArray of pages defining the slides of the slideshow.
+            'duration_field' => 'duration',         // Field of the slide page that provides the duration (in seconds)
+            'overlay_field'  => 'body',             // Field of the slide page that provides the overlay text
+            'image_field'    => 'image',            // Field of the slide page that provides the image (url)
             'html_class'     => 'markup-crossfade', // What class to apply to the owning list
-            'li_id'          => 'slide_',      // What id to use for each slide. The slide # will be appended to this
+            'li_id'          => 'slide_',           // What id to use for each slide. The slide # will be appended to this
         );
     }
 
