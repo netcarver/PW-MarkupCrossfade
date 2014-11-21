@@ -4,8 +4,8 @@ class MarkupCrossfade extends WireData implements Module
 {
     public static function getModuleInfo() {
         return array(
-            'title'    => 'Markup Cross-Fade',
-            'summary'  => 'Generates CSS3 Key-frame-animated cross fades.',
+            'title'    => __('Markup Cross-Fade', __FILE__),
+            'summary'  => __('Generates CSS3 Key-frame-animated cross fades.', __FILE__),
             'version'  => 1,
             'autoload' => false,
             'author'   => 'Stephen Dickinson, QBox.co',
@@ -16,12 +16,12 @@ class MarkupCrossfade extends WireData implements Module
     public function getParams($pages = null)
     {
         return array(
-            'pages'          => $pages,
-            'duration_field' => 'duration',
-            'overlay_field'  => 'body',
-            'image_field'    => 'image',
-            'html_class'     => 'markup-crossfade',
-            'li_id'          => 'slide_',
+            'pages'          => $pages,        // WireArray of pages defining the slides of the slideshow.
+            'duration_field' => 'duration',    // Field of the slide page that provides the duration (in seconds)
+            'overlay_field'  => 'body',        // Field of the slide page that provides the overlay text
+            'image_field'    => 'image',       // Field of the slide page that provides the image (url)
+            'html_class'     => 'markup-crossfade', // What class to apply to the owning list
+            'li_id'          => 'slide_',      // What id to use for each slide. The slide # will be appended to this
         );
     }
 
