@@ -209,7 +209,7 @@ $img_kf_webkit}
 $img_kf_moz}
 
 @-o-keyframes imageAnimation{$i} {
-$img_o_moz}
+$img_kf_moz}
 
 @keyframes titleAnimation{$i} {
 $title_kf}
