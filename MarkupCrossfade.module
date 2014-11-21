@@ -115,50 +115,50 @@ class MarkupCrossfade extends WireData implements Module
             foreach ($info['keyframes-images'] as $pc => $opacity) {
                 switch ($j) {
                 case 0:
-                    $ease = '; {browser}animation-timing-function:ease-in;';
+                    $ease = ' {browser}animation-timing-function:ease-in;';
                     break;
                 case 1:
-                    $ease = '; {browser}animation-timing-function:ease-out;';
+                    $ease = ' {browser}animation-timing-function:ease-out;';
                     break;
                 default:
-                    $ease = '; transform: scale(1.1)';
+                    $ease = ' transform: scale(1.1)';
                 }
 
-                $img_kf .= "$pc {opacity:$opacity;$ease}\n";
+                $img_kf .= "\t$pc {opacity:$opacity;$ease}\n";
                 $j++;
             }
 
             $ttl_kf = '';
             foreach ($info['keyframes-titles'] as $pc => $opacity) {
-                $ttl_kf .= "$pc {opacity:$opacity}\n";
+                $ttl_kf .= "\t$pc {opacity:$opacity}\n";
             }
 
 
             $css .=<<<CSS
 .{$html_class} li#{$li_id}{$i} span {
-animation        : imageAnimation{$i} {$total}s linear infinite 0s;
--webkit-animation: imageAnimation{$i} {$total}s linear infinite 0s;
--moz-animation   : imageAnimation{$i} {$total}s linear infinite 0s;
--o-animation     : imageAnimation{$i} {$total}s linear infinite 0s;
--ms-animation    : imageAnimation{$i} {$total}s linear infinite 0s;
-background-image : url('{$info['url']}');
-animation-delay        : {$delay}s;
--webkit-animation-delay: {$delay}s;
--moz-animation-delay   : {$delay}s;
--o-animation-delay     : {$delay}s;
--ms-animation-delay    : {$delay}s;
+\tanimation: imageAnimation{$i} {$total}s linear infinite 0s;
+\t-webkit-animation: imageAnimation{$i} {$total}s linear infinite 0s;
+\t-moz-animation: imageAnimation{$i} {$total}s linear infinite 0s;
+\t-o-animation: imageAnimation{$i} {$total}s linear infinite 0s;
+\t-ms-animation: imageAnimation{$i} {$total}s linear infinite 0s;
+\tbackground-image: url('{$info['url']}');
+\tanimation-delay: {$delay}s;
+\t-webkit-animation-delay: {$delay}s;
+\t-moz-animation-delay: {$delay}s;
+\t-o-animation-delay: {$delay}s;
+\t-ms-animation-delay: {$delay}s;
 }
 .{$html_class} li#{$li_id}{$i} div {
-animation        : titleAnimation{$i} {$total}s linear infinite 0s;
--webkit-animation: titleAnimation{$i} {$total}s linear infinite 0s;
--moz-animation   : titleAnimation{$i} {$total}s linear infinite 0s;
--o-animation     : titleAnimation{$i} {$total}s linear infinite 0s;
--ms-animation    : titleAnimation{$i} {$total}s linear infinite 0s;
-animation-delay        : {$delay}s;
--webkit-animation-delay: {$delay}s;
--moz-animation-delay   : {$delay}s;
--o-animation-delay     : {$delay}s;
--ms-animation-delay    : {$delay}s;
+\tanimation: titleAnimation{$i} {$total}s linear infinite 0s;
+\t-webkit-animation: titleAnimation{$i} {$total}s linear infinite 0s;
+\t-moz-animation: titleAnimation{$i} {$total}s linear infinite 0s;
+\t-o-animation: titleAnimation{$i} {$total}s linear infinite 0s;
+\t-ms-animation: titleAnimation{$i} {$total}s linear infinite 0s;
+\tanimation-delay: {$delay}s;
+\t-webkit-animation-delay: {$delay}s;
+\t-moz-animation-delay: {$delay}s;
+\t-o-animation-delay: {$delay}s;
+\t-ms-animation-delay: {$delay}s;
 }
 
 CSS;
@@ -197,9 +197,6 @@ CSS;
             if ($p->$param_overlay_field) {
                 $o[] = "\t\t<h3>{$p->$param_overlay_field}</h3>";
             }
-            /* if ($p->body) { */
-            /*     $o = "\t\t<p>{$p->body}</p>"; */
-            /* } */
             $o[] = "\t</div>";
             $o[] = '</li>';
         }
