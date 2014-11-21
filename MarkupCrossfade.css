@@ -27,13 +27,14 @@ ol.{{html_class}}, ul.{{html_class}} {
 }
 .{{html_class}} li div {
     position: absolute;
-    bottom: 30px;
+    bottom: 10px;
     left: 0px;
     width: 100%;
     text-align: center;
     opacity: 0;
     color: #fff;
     text-transform: uppercase;
+    background-color: rgba(13,13,13,0.4);
 }
 .{{html_class}} li div h3 {
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
@@ -41,16 +42,8 @@ ol.{{html_class}}, ul.{{html_class}} {
     padding: 0;
     line-height: 140px;
     color: rgba(255,255,255, 1);
-    background-color: rgba(13,13,13,0.4);
-    text-shadow: 0 0 5px #00c6ff;
+    text-shadow: 0 0 8px #00c6ff;
 }
-tr.wide {
-    height: 100px;
-}
-tr.wide td, .table>tbody>tr.wide>td {
-    vertical-align: middle;
-}
-
 /* Show at least something when animations not supported */
 .no-cssanimations .{{html_class}} li span{
     opacity: 1;
