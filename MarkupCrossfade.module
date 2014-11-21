@@ -35,7 +35,7 @@ class MarkupCrossfade extends WireData implements Module
                 '-ms-'
             ),
             'skip_css'          => false,              // true => use your own CSS file.
-            'mask_image'        => '',                 // location of mask image, if any. Leave blank if none.
+            'mask_image'        => '',                 // location of mask image. Leave blank if none.
         );
     }
 
