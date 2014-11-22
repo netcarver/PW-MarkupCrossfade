@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MarkupCrossfade - A module for Processwire that generates full-screen CSS3 cross-faded and animated slide-shows with
+ * MarkupCrossfade - A module for Processwire that renders full-screen CSS3 cross-faded and animated slide-shows with
  * optional overlay text.
  *
  * Inspired by Mary Lou's articles on CSS3 animation on co-drops.
@@ -22,7 +22,7 @@ class MarkupCrossfade extends WireData implements Module
 
 
     /**
-     * Retrieves the default parameters for the module's generate*() methods.
+     * Retrieves the default parameters for the module's render*() methods.
      *
      * @param null|WireArray Pages representing slides in the slideshow.
      * @return array The default parameters for rendering.
@@ -41,7 +41,7 @@ class MarkupCrossfade extends WireData implements Module
             'html_class'        => 'markup-crossfade', // What class to apply to the owning list
             'z_index'           => '-10',              // z-index of slideshow container and it's spans
             'li_id'             => 'slide_',           // What id to use for each slide. The slide # will be appended to this
-            'browsers'          => array(              // Array of browsers extensions to generate CSS for
+            'browsers'          => array(              // Array of browsers extensions to render CSS for
                 '',
                 '-webkit-',
                 '-moz-',
@@ -142,7 +142,7 @@ class MarkupCrossfade extends WireData implements Module
 
 
     /**
-     * Generates the CSS used by the slideshow.
+     * Renders the CSS used by the slideshow.
      *
      * This will include all the animation keyframes and transformations for both the primary image from each of the
      * slide pages along with overlay text (if any). Additional default CSS will be output as read from the
@@ -153,7 +153,7 @@ class MarkupCrossfade extends WireData implements Module
      * @param array Parameters.
      * @return string CSS to inject into your output.
      */
-    public static function generateCss(array $params)
+    public static function renderCss(array $params)
     {
         $timings    = self::calcTimings($params);
         $total      = $timings['total'];
@@ -294,12 +294,12 @@ CSS;
 
 
     /**
-     * Generates the slideshow HTML.
+     * Renders the slideshow HTML.
      *
      * @param array Parameters.
      * @return string HTML to inject into your output.
      */
-    public static function generateHtml(array $params)
+    public static function renderHtml(array $params)
     {
         $params = array_merge(self::getParams(), $params);
         extract($params, EXTR_PREFIX_ALL, 'param');
