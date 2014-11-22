@@ -95,12 +95,12 @@ class MarkupCrossfade extends WireData implements Module
             $timings['slides'][$zero_index+1]['delay']      = $timings['total'];
             $timings['slides'][$zero_index+1]['url']        = $image;
             $timings['slides'][$zero_index+1]['duration']   = $slide_duration;
-            if (null !== $p->$param_title_xform_field) {
+            if (null !== $slide_page->$param_title_xform_field) {
                 $timings['slides'][$zero_index+1]['ttl_xforms'] = $slide_page->$param_title_xform_field;
             } else {
                 $timings['slides'][$zero_index+1]['ttl_xforms'] = $param_title_xforms;
             }
-            if (null !== $p->$param_image_xform_field) {
+            if (null !== $slide_page->$param_image_xform_field) {
                 $timings['slides'][$zero_index+1]['img_xforms'] = $slide_page->$param_image_xform_field;
             } else {
                 $timings['slides'][$zero_index+1]['img_xforms'] = $param_image_xforms;
