@@ -52,7 +52,7 @@ class MarkupCrossfade extends WireData implements Module
 
         $timings = array(
             'total' => 0,
-            'panels' => array(
+            'slides' => array(
             ),
             'html_class' => $param_html_class,
             'li_id' => $param_li_id,
@@ -74,25 +74,25 @@ class MarkupCrossfade extends WireData implements Module
 
 
             $panel_duration = $p->$param_duration_field;
-            $timings['panels'][$z+1]['delay']      = $timings['total'];
-            $timings['panels'][$z+1]['url']        = $image;
-            $timings['panels'][$z+1]['duration']   = $panel_duration;
+            $timings['slides'][$z+1]['delay']      = $timings['total'];
+            $timings['slides'][$z+1]['url']        = $image;
+            $timings['slides'][$z+1]['duration']   = $panel_duration;
             if (null !== $p->$param_title_xform_field) {
-                $timings['panels'][$z+1]['ttl_xforms'] = $p->$param_title_xform_field;
+                $timings['slides'][$z+1]['ttl_xforms'] = $p->$param_title_xform_field;
             } else {
-                $timings['panels'][$z+1]['ttl_xforms'] = $param_title_xforms;
+                $timings['slides'][$z+1]['ttl_xforms'] = $param_title_xforms;
             }
             if (null !== $p->$param_image_xform_field) {
-                $timings['panels'][$z+1]['img_xforms'] = $p->$param_image_xform_field;
+                $timings['slides'][$z+1]['img_xforms'] = $p->$param_image_xform_field;
             } else {
-                $timings['panels'][$z+1]['img_xforms'] = $param_image_xforms;
+                $timings['slides'][$z+1]['img_xforms'] = $param_image_xforms;
             }
             $timings['total'] += (int) $panel_duration;
         }
 
         $total = $timings['total'];
-        foreach ($timings['panels'] as $i => &$info) {
-            $finish_pc = (int) bcdiv(bcmul("100", $info['duration'], 2), "$total", 2);
+        foreach ($timings['slides'] as $i => &$slide) {
+            $finish_pc = (int) bcdiv(bcmul("100", $slide['duration'], 2), "$total", 2);
             $half_pc   = (int) bcdiv($finish_pc, "2", 2);
             $done_pc   = $finish_pc + $half_pc;
             if ($done_pc > 100) {
@@ -118,8 +118,8 @@ class MarkupCrossfade extends WireData implements Module
                 "100%" => 0,
             );
 
-            $info['keyframes-images'] = $keyframes_images;
-            $info['keyframes-titles'] = $keyframes_titles;
+            $slide['keyframes-images'] = $keyframes_images;
+            $slide['keyframes-titles'] = $keyframes_titles;
         }
 
         return $timings;
@@ -128,14 +128,14 @@ class MarkupCrossfade extends WireData implements Module
 
     public static function generateCss(array $params)
     {
-        $times = self::calcTimings($params);
-        $total = $times['total'];
-        $html_class = $times['html_class'];
-        $li_id      = $times['li_id'];
-        $browsers   = $times['browsers'];
-        $skip_css   = $times['skip_css'];
-        $z_index    = $times['z_index'];
-        $mask_image = $times['mask_image'];
+        $timings    = self::calcTimings($params);
+        $total      = $timings['total'];
+        $html_class = $timings['html_class'];
+        $li_id      = $timings['li_id'];
+        $browsers   = $timings['browsers'];
+        $skip_css   = $timings['skip_css'];
+        $z_index    = $timings['z_index'];
+        $mask_image = $timings['mask_image'];
 
         $static_css = '';
         if (!$skip_css) {
@@ -161,15 +161,15 @@ class MarkupCrossfade extends WireData implements Module
         $image_frame_cache = array();
         $title_frame_cache = array();
 
-        foreach ($times['panels'] as $i => $info) {
-            $delay      = $info['delay'];
+        foreach ($timings['slides'] as $i => $slide) {
+            $delay      = $slide['delay'];
 
-            $ttl_xforms = explode("\n", $info['ttl_xforms']);
-            $img_xforms = explode("\n", $info['img_xforms']);
+            $ttl_xforms = explode("\n", $slide['ttl_xforms']);
+            $img_xforms = explode("\n", $slide['img_xforms']);
 
             $img_kf = '';
             $j = 0;
-            foreach ($info['keyframes-images'] as $pc => $opacity) {
+            foreach ($slide['keyframes-images'] as $pc => $opacity) {
 
                 // Add opacity...
                 $x = array("opacity:$opacity");
@@ -194,7 +194,7 @@ class MarkupCrossfade extends WireData implements Module
 
             $ttl_kf = '';
             $j = 0;
-            foreach ($info['keyframes-titles'] as $pc => $opacity) {
+            foreach ($slide['keyframes-titles'] as $pc => $opacity) {
 
                 // Add opacity...
                 $x = array("opacity:$opacity");
@@ -250,7 +250,7 @@ class MarkupCrossfade extends WireData implements Module
 
             $css .=<<<CSS
 .{$html_class} li#{$li_id}{$i} span {
-\tbackground-image: url('{$info['url']}');
+\tbackground-image: url('{$slide['url']}');
 $css_img
 $css_del
 }
