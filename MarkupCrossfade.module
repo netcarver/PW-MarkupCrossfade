@@ -14,7 +14,7 @@ class MarkupCrossfade extends WireData implements Module
         return array(
             'title'    => __('Markup Cross-Fade', __FILE__),
             'summary'  => __('Generates CSS3 Key-frame-animated cross fades.', __FILE__),
-            'version'  => 90,
+            'version'  => 100,
             'autoload' => false,
             'author'   => 'Stephen Dickinson, QBox.co',
         );
