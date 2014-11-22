@@ -1,18 +1,32 @@
 <?php
 
+/**
+ * MarkupCrossfade - A module for Processwire that generates full-screen CSS3 cross-faded and animated slide-shows with
+ * optional overlay text.
+ *
+ * Inspired by Mary Lou's articles on CSS3 animation on co-drops.
+ *
+ * Copyright 2014 Stephen Dickinson, QBox.co.
+ */
 class MarkupCrossfade extends WireData implements Module
 {
     public static function getModuleInfo() {
         return array(
             'title'    => __('Markup Cross-Fade', __FILE__),
             'summary'  => __('Generates CSS3 Key-frame-animated cross fades.', __FILE__),
-            'version'  => 1,
+            'version'  => 90,
             'autoload' => false,
             'author'   => 'Stephen Dickinson, QBox.co',
         );
     }
 
 
+    /**
+     * Retrieves the default parameters for the module's generate*() methods.
+     *
+     * @param null|WireArray Pages representing slides in the slideshow.
+     * @return array The default parameters for rendering.
+     */
     public static function getParams($pages = null)
     {
         return array(
@@ -40,6 +54,12 @@ class MarkupCrossfade extends WireData implements Module
     }
 
 
+    /**
+     * Calculates slide timings.
+     *
+     * @param array A PHP array containing the parameters to be used in calculating the animation timings.
+     * @return array A PHP array containing the calculated animation timings.
+     */
     protected static function calcTimings(array $params)
     {
         $params = array_merge(self::getParams(), $params);
@@ -122,6 +142,18 @@ class MarkupCrossfade extends WireData implements Module
     }
 
 
+    /**
+     * Generates the CSS used by the slideshow.
+     *
+     * This will include all the animation keyframes and transformations for both the primary image from each of the
+     * slide pages along with overlay text (if any). Additional default CSS will be output as read from the
+     * MarkupCrossfade.css file with suitable substitutions made for various parameters. You can either edit the css
+     * file directly or use your own from the calling template file. If you choose to use your own, please set the
+     * parameter value 'skip_css' => false before generating the CSS and HTML.
+     *
+     * @param array Parameters.
+     * @return string CSS to inject into your output.
+     */
     public static function generateCss(array $params)
     {
         $timings    = self::calcTimings($params);
@@ -262,6 +294,12 @@ CSS;
     }
 
 
+    /**
+     * Generates the slideshow HTML.
+     *
+     * @param array Parameters.
+     * @return string HTML to inject into your output.
+     */
     public static function generateHtml(array $params)
     {
         $params = array_merge(self::getParams(), $params);
