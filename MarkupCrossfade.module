@@ -45,8 +45,8 @@ class MarkupCrossfade extends WireData implements Module
         $params = array_merge(self::getParams(), $params);
         extract($params, EXTR_PREFIX_ALL, 'param');
 
-        $num_panels = $param_pages->getTotal();
-        if ($num_panels == 0) {
+        $num_slides = $param_pages->getTotal();
+        if ($num_slides == 0) {
             throw new \WireException(__('You must define which pages are to be used as slides for the crossfade.', __FILE__));
         }
 
@@ -62,8 +62,8 @@ class MarkupCrossfade extends WireData implements Module
             'mask_image' => $param_mask_image,
         );
 
-        foreach ($param_pages as $z => $p) {
-            $images = $p->$param_image_field;
+        foreach ($param_pages as $zero_index => $slide_page) {
+            $images = $slide_page->$param_image_field;
             if (null === $images) {
                 $image = '';
             } else if ($images instanceof WireArray) {
@@ -72,22 +72,21 @@ class MarkupCrossfade extends WireData implements Module
                 $image = $images->url;
             }
 
-
-            $panel_duration = $p->$param_duration_field;
-            $timings['slides'][$z+1]['delay']      = $timings['total'];
-            $timings['slides'][$z+1]['url']        = $image;
-            $timings['slides'][$z+1]['duration']   = $panel_duration;
+            $slide_duration = $slide_page->$param_duration_field;
+            $timings['slides'][$zero_index+1]['delay']      = $timings['total'];
+            $timings['slides'][$zero_index+1]['url']        = $image;
+            $timings['slides'][$zero_index+1]['duration']   = $slide_duration;
             if (null !== $p->$param_title_xform_field) {
-                $timings['slides'][$z+1]['ttl_xforms'] = $p->$param_title_xform_field;
+                $timings['slides'][$zero_index+1]['ttl_xforms'] = $slide_page->$param_title_xform_field;
             } else {
-                $timings['slides'][$z+1]['ttl_xforms'] = $param_title_xforms;
+                $timings['slides'][$zero_index+1]['ttl_xforms'] = $param_title_xforms;
             }
             if (null !== $p->$param_image_xform_field) {
-                $timings['slides'][$z+1]['img_xforms'] = $p->$param_image_xform_field;
+                $timings['slides'][$zero_index+1]['img_xforms'] = $slide_page->$param_image_xform_field;
             } else {
-                $timings['slides'][$z+1]['img_xforms'] = $param_image_xforms;
+                $timings['slides'][$zero_index+1]['img_xforms'] = $param_image_xforms;
             }
-            $timings['total'] += (int) $panel_duration;
+            $timings['total'] += (int) $slide_duration;
         }
 
         $total = $timings['total'];
@@ -106,9 +105,6 @@ class MarkupCrossfade extends WireData implements Module
                 "$done_pc%" => 0,
                 "100%" => 0,
             );
-
-            $half_pc += 0;
-            $done_pc -= 0;
 
             $keyframes_titles = array(
                 "0%" => 0,
@@ -271,19 +267,19 @@ CSS;
         $params = array_merge(self::getParams(), $params);
         extract($params, EXTR_PREFIX_ALL, 'param');
 
-        $num_panels = $param_pages->getTotal();
-        if ($num_panels == 0) {
+        $num_slides = $param_pages->getTotal();
+        if ($num_slides == 0) {
             throw new \WireException(__('You must define which pages are to be used as slides for the crossfade.', __FILE__));
         }
 
         $o[] = '<ul class="'.$param_html_class.'">';
-        foreach ($param_pages as $z => $p) {
-            $i = $z + 1;
+        foreach ($param_pages as $zero_index => $slide_page) {
+            $i = $zero_index + 1;
             $o[] = "<li id=\"$param_li_id$i\">";
             $o[] = "\t<span>Panel $i</span>";
             $o[] = "\t<div>";
-            if ($p->$param_overlay_field) {
-                $o[] = "\t\t<h3>{$p->$param_overlay_field}</h3>";
+            if ($slide_page->$param_overlay_field) {
+                $o[] = "\t\t<h3>{$slide_page->$param_overlay_field}</h3>";
             }
             $o[] = "\t</div>";
             $o[] = '</li>';
