@@ -71,14 +71,13 @@ class MarkupCrossfade extends WireData implements Module
         }
 
         $timings = array(
-            'total' => 0,
-            'slides' => array(
-            ),
+            'total'      => 0,
+            'slides'     => array(),
             'html_class' => $param_html_class,
-            'li_id' => $param_li_id,
-            'browsers' => $param_browsers,
-            'z_index' => $param_z_index,
-            'skip_css' => $param_skip_css,
+            'li_id'      => $param_li_id,
+            'browsers'   => $param_browsers,
+            'z_index'    => $param_z_index,
+            'skip_css'   => $param_skip_css,
             'mask_image' => $param_mask_image,
         );
 
