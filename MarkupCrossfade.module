@@ -191,10 +191,6 @@ class MarkupCrossfade extends WireData implements Module
                 $img_kf .= "\t$pc $x\n";
                 $j++;
             }
-            $image_kf_key = sha1($img_kf);
-            if (!in_array($image_kf_key, $image_frame_cache)) {
-                $image_frame_cache[$image_kf_key] = array($i, $img_kf);
-            }
 
             $ttl_kf = '';
             $j = 0;
@@ -213,19 +209,40 @@ class MarkupCrossfade extends WireData implements Module
                 $ttl_kf .= "\t$pc $x\n";
                 $j++;
             }
-            $title_kf_key = sha1($ttl_kf);
-            if (!in_array($title_kf_key, $title_frame_cache)) {
-                $title_frame_cache[$title_kf_key] = array($i, $ttl_kf);
+
+            $image_kf_key = md5($img_kf);
+            $title_kf_key = md5($ttl_kf);
+            $image_kf = '';
+            $title_kf = '';
+
+            foreach ($browsers as $browser) {
+                $tmp_image_kf = str_replace('{browser}', $browser, $img_kf);
+                $tmp_title_kf = str_replace('{browser}', $browser, $ttl_kf);
+
+                $image_kf .= "@{$browser}keyframes img_ani_{$i} {\n$tmp_image_kf}\n";
+                $title_kf .= "@{$browser}keyframes ttl_ani_{$i} {\n$tmp_title_kf}\n";
             }
 
+            if (!array_key_exists($image_kf_key, $image_frame_cache)) {
+                $image_frame_cache[$image_kf_key] = array($i, $image_kf);
+                $css .= $image_kf;
+            }
+
+            if (!array_key_exists($title_kf_key, $title_frame_cache)) {
+                $title_frame_cache[$title_kf_key] = array($i, $title_kf);
+                $css .= $title_kf;
+            }
+
+            $image_index = $image_frame_cache[$image_kf_key][0];
+            $title_index = $title_frame_cache[$title_kf_key][0];
 
             $css .=<<<CSS
 .{$html_class} li#{$li_id}{$i} span {
-\tanimation: imageAnimation{$i} {$total}s linear infinite 0s;
-\t-webkit-animation: imageAnimation{$i} {$total}s linear infinite 0s;
-\t-moz-animation: imageAnimation{$i} {$total}s linear infinite 0s;
-\t-o-animation: imageAnimation{$i} {$total}s linear infinite 0s;
-\t-ms-animation: imageAnimation{$i} {$total}s linear infinite 0s;
+\tanimation: img_ani_{$image_index} {$total}s linear infinite 0s;
+\t-webkit-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
+\t-moz-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
+\t-o-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
+\t-ms-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
 \tbackground-image: url('{$info['url']}');
 \tanimation-delay: {$delay}s;
 \t-webkit-animation-delay: {$delay}s;
@@ -234,11 +251,11 @@ class MarkupCrossfade extends WireData implements Module
 \t-ms-animation-delay: {$delay}s;
 }
 .{$html_class} li#{$li_id}{$i} div {
-\tanimation: titleAnimation{$i} {$total}s linear infinite 0s;
-\t-webkit-animation: titleAnimation{$i} {$total}s linear infinite 0s;
-\t-moz-animation: titleAnimation{$i} {$total}s linear infinite 0s;
-\t-o-animation: titleAnimation{$i} {$total}s linear infinite 0s;
-\t-ms-animation: titleAnimation{$i} {$total}s linear infinite 0s;
+\tanimation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
+\t-webkit-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
+\t-moz-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
+\t-o-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
+\t-ms-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
 \tanimation-delay: {$delay}s;
 \t-webkit-animation-delay: {$delay}s;
 \t-moz-animation-delay: {$delay}s;
@@ -248,13 +265,7 @@ class MarkupCrossfade extends WireData implements Module
 
 CSS;
 
-            foreach ($browsers as $browser) {
-                $image_kf = str_replace('{browser}', $browser, $img_kf);
-                $title_kf = str_replace('{browser}', $browser, $ttl_kf);
 
-                $css .= "@{$browser}keyframes imageAnimation{$i} {\n$image_kf}\n";
-                $css .= "@{$browser}keyframes titleAnimation{$i} {\n$title_kf}\n";
-            }
         }
 
         return "$static_css\n$css";
