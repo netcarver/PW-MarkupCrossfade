@@ -31,22 +31,27 @@ ol.{{html_class}}, ul.{{html_class}} {
     bottom: 10px;
     left: 0px;
     width: 100%;
-    text-align: center;
     opacity: 0;
-    color: #fff;
-    text-transform: uppercase;
+    /* Setup a dark background with a moderate alpha-transparancy */
     background-color: rgba(13,13,13,0.4);
+    /* Setup a high contrast text colour */
+    color: #fff;
+    text-shadow: 0 0 8px #00c6ff;
+    /* Align and transform text as required: default to uppercase, centered */
+    text-align: center;
+    text-transform: uppercase;
 }
 .{{html_class}} li div h3 {
-    font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-    font-size: 140px;
     padding: 0;
+    font-size: 140px;
     line-height: 110%;
-    color: rgba(255,255,255, 1);
-    text-shadow: 0 0 8px #00c6ff;
+    /* Setup with a narrow sans-serif font by default. You'll need to edit out or pre-load any webfonts
+       prior to rendering this css. BebasNeueRegular is a good fit for this application and is free to download from
+       font squirrel (http://www.fontsquirrel.com/fonts/bebas-neue). */
+    font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
 }
-/* Show at least something when animations not supported */
-.no-cssanimations .{{html_class}} li span{
+/* Show something if animations not supported by browser */
+.no-cssanimations .{{html_class}} li span {
     opacity: 1;
 }
 
