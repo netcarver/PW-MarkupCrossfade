@@ -13,7 +13,7 @@ class MarkupCrossfade extends WireData implements Module
     }
 
 
-    public function getParams($pages = null)
+    public static function getParams($pages = null)
     {
         return array(
             'pages'             => $pages,             // WireArray of pages defining the slides of the slideshow.
@@ -262,7 +262,7 @@ CSS;
     }
 
 
-    function generateHtml(array $params)
+    public static function generateHtml(array $params)
     {
         $params = array_merge(self::getParams(), $params);
         extract($params, EXTR_PREFIX_ALL, 'param');
