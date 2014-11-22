@@ -158,6 +158,9 @@ class MarkupCrossfade extends WireData implements Module
         }
         $css = '';
 
+        $image_frame_cache = array();
+        $title_frame_cache = array();
+
         foreach ($times['panels'] as $i => $info) {
             $delay      = $info['delay'];
 
@@ -188,6 +191,10 @@ class MarkupCrossfade extends WireData implements Module
                 $img_kf .= "\t$pc $x\n";
                 $j++;
             }
+            $image_kf_key = sha1($img_kf);
+            if (!in_array($image_kf_key, $image_frame_cache)) {
+                $image_frame_cache[$image_kf_key] = array($i, $img_kf);
+            }
 
             $ttl_kf = '';
             $j = 0;
@@ -205,6 +212,10 @@ class MarkupCrossfade extends WireData implements Module
                 $x = '{'.implode("; ", $x).';}';
                 $ttl_kf .= "\t$pc $x\n";
                 $j++;
+            }
+            $title_kf_key = sha1($ttl_kf);
+            if (!in_array($title_kf_key, $title_frame_cache)) {
+                $title_frame_cache[$title_kf_key] = array($i, $ttl_kf);
             }
 
 
