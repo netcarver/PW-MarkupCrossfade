@@ -272,11 +272,13 @@ CSS;
             throw new \WireException(__('You must define which pages are to be used as slides for the crossfade.', __FILE__));
         }
 
+        $slide_txt = __("Slide", __FILE__);
+
         $o[] = '<ul class="'.$param_html_class.'">';
         foreach ($param_pages as $zero_index => $slide_page) {
             $i = $zero_index + 1;
             $o[] = "<li id=\"$param_li_id$i\">";
-            $o[] = "\t<span>Panel $i</span>";
+            $o[] = "\t<span>$slide_txt $i</span>";
             $o[] = "\t<div>";
             if ($slide_page->$param_overlay_field) {
                 $o[] = "\t\t<h3>{$slide_page->$param_overlay_field}</h3>";
