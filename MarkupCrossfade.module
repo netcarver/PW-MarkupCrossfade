@@ -235,37 +235,31 @@ class MarkupCrossfade extends WireData implements Module
 
             $image_index = $image_frame_cache[$image_kf_key][0];
             $title_index = $title_frame_cache[$title_kf_key][0];
+            $css_img = array();
+            $css_ttl = array();
+            $css_del = array();
+
+            foreach ($browsers as $browser) {
+                $css_img[] = "\t{$browser}animation: img_ani_{$image_index} {$total}s linear infinite 0s;";
+                $css_ttl[] = "\t{$browser}animation: ttl_ani_{$image_index} {$total}s linear infinite 0s;";
+                $css_del[] = "\t{$browser}animation-delay: {$delay}s;";
+            }
+            $css_img = implode("\n", $css_img);
+            $css_ttl = implode("\n", $css_ttl);
+            $css_del = implode("\n", $css_del);
 
             $css .=<<<CSS
 .{$html_class} li#{$li_id}{$i} span {
-\tanimation: img_ani_{$image_index} {$total}s linear infinite 0s;
-\t-webkit-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
-\t-moz-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
-\t-o-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
-\t-ms-animation: img_ani_{$image_index} {$total}s linear infinite 0s;
 \tbackground-image: url('{$info['url']}');
-\tanimation-delay: {$delay}s;
-\t-webkit-animation-delay: {$delay}s;
-\t-moz-animation-delay: {$delay}s;
-\t-o-animation-delay: {$delay}s;
-\t-ms-animation-delay: {$delay}s;
+$css_img
+$css_del
 }
 .{$html_class} li#{$li_id}{$i} div {
-\tanimation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
-\t-webkit-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
-\t-moz-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
-\t-o-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
-\t-ms-animation: ttl_ani_{$title_index} {$total}s linear infinite 0s;
-\tanimation-delay: {$delay}s;
-\t-webkit-animation-delay: {$delay}s;
-\t-moz-animation-delay: {$delay}s;
-\t-o-animation-delay: {$delay}s;
-\t-ms-animation-delay: {$delay}s;
+$css_ttl
+$css_del
 }
 
 CSS;
-
-
         }
 
         return "$static_css\n$css";
