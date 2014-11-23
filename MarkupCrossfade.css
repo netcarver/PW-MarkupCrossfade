@@ -8,8 +8,11 @@
     z-index: {{z_index}};
 }
 {{mask_image}}
-ol.{{html_class}}, ul.{{html_class}} {
+ul.{{html_class}} {
     list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 .{{html_class}} li span {
     width: 100%;
@@ -28,7 +31,7 @@ ol.{{html_class}}, ul.{{html_class}} {
 }
 .{{html_class}} li div {
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     left: 0px;
     width: 100%;
     opacity: 0;
@@ -42,8 +45,9 @@ ol.{{html_class}}, ul.{{html_class}} {
     text-transform: uppercase;
 }
 .{{html_class}} li div h3 {
-    padding: 0;
-    font-size: 140px;
+    padding: 0.1em 0.5em;
+    margin: 0.1em;
+    font-size: 80px;
     line-height: 110%;
     /* Setup with a narrow sans-serif font by default. You'll need to edit out or pre-load any webfonts
        prior to rendering this css. BebasNeueRegular is a good fit for this application and is free to download from
