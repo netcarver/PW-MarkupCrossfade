@@ -47,12 +47,8 @@ ul.{{html_class}} {
 .{{html_class}} li div h3 {
     padding: 0.1em 0.5em;
     margin: 0.1em;
-    font-size: 80px;
+    font-size: 70px;
     line-height: 110%;
-    /* Setup with a narrow sans-serif font by default. You'll need to edit out or pre-load any webfonts
-       prior to rendering this css. BebasNeueRegular is a good fit for this application and is free to download from
-       font squirrel (http://www.fontsquirrel.com/fonts/bebas-neue). */
-    font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
 }
 /* Show something if animations not supported by browser */
 .no-cssanimations .{{html_class}} li span {
