@@ -6,6 +6,7 @@
  *
  * Inspired by Mary Lou's articles on CSS3 animation on co-drops.
  *
+ * License: GPLv2 or later.
  * Copyright 2014 Stephen Dickinson, QBox.co.
  */
 class MarkupCrossfade extends WireData implements Module
