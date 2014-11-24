@@ -54,10 +54,3 @@ ul.{{html_class}} {
 .no-cssanimations .{{html_class}} li span {
     opacity: 1;
 }
-
-@media screen and (max-width: 1140px) {
-    .{{html_class}} li div h3 { font-size: 100px }
-}
-@media screen and (max-width: 600px) {
-    .{{html_class}} li div h3 { font-size: 80px }
-}
