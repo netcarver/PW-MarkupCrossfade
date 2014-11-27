@@ -84,10 +84,11 @@ class MarkupCrossfade extends WireData implements Module
 
         foreach ($param_pages as $zero_index => $slide_page) {
             $images = $slide_page->$param_image_field;
-            if (null === $images) {
                 $image = '';
-            } else if ($images instanceof WireArray) {
-                $image = $images->first->url;
+            if ($images instanceof WireArray) {
+                $first = $images->first();
+                if ($first)
+                    $image = $first->url;
             } else {
                 $image = $images->url;
             }
